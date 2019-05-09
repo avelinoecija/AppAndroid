@@ -24,6 +24,9 @@
         <activity
             android:name=".PollActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FinalActivity"
+            android:theme="@style/AppTheme" />
 
     </application>
 
