@@ -30,6 +30,8 @@ public class HttpHandler {
             // read the response
             InputStream in = new BufferedInputStream(conn.getInputStream());
             response = convertStreamToString(in);
+            InputStream in2 = new BufferedInputStream(conn2.getInputStream());
+            response = convertStreamToString(in2);
         } catch (MalformedURLException e) {
             Log.e(TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
@@ -41,6 +43,7 @@ public class HttpHandler {
         }
         return response;
     }
+
 
     private String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -63,4 +66,5 @@ public class HttpHandler {
 
         return sb.toString();
     }
+
 }

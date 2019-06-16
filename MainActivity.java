@@ -9,15 +9,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.widget.AdapterView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
@@ -29,6 +32,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private String TAG = MainActivity.class.getSimpleName();
 
 
+
     @InjectView(R.id.input_email)
     EditText _emailText;
     @InjectView(R.id.input_password)
@@ -37,7 +41,8 @@ public class MainActivity extends Activity implements OnClickListener {
     Button _loginButton;
     @InjectView(R.id.link_signup)
     TextView _signupLink;
-    private ListView lv;
+    public ListView lv;
+    public TextView prueba2;
 
     ArrayList<HashMap<String, String>> contactList;
     @Override
@@ -50,12 +55,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
         lv = (ListView) findViewById(R.id.list);
         contactList = new ArrayList<>();
+        prueba2 = (TextView) findViewById(R.id.email);
 
 
 
         new GetContacts().execute();
 
-        _loginButton.setOnClickListener(new View.OnClickListener() {
+        _loginButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -63,7 +69,7 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         });
 
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+        _signupLink.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -73,7 +79,6 @@ public class MainActivity extends Activity implements OnClickListener {
             }
         });
 
-
     }
 
     private class GetContacts extends AsyncTask<Void, Void, Void> {
@@ -81,7 +86,7 @@ public class MainActivity extends Activity implements OnClickListener {
         protected Void doInBackground(Void... voids) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
-            String url = "http://192.168.202.191:8000/api/usuarios";
+            String url = "http://10.10.2.2:8000/api/usuarios";
             String jsonStr = sh.makeServiceCall(url);
 
             Log.e(TAG, "Response from url: " + jsonStr);
@@ -161,7 +166,19 @@ public class MainActivity extends Activity implements OnClickListener {
             Button b = (Button) findViewById(R.id.my_button);
             b.setClickable(true);
 
+           ListAdapter adapter2 = new SimpleAdapter(MainActivity.this, Collections.singletonList(contactList.get(0)), R.layout.list_item, new String[]{"correo"}, new int[]{R.id.email});
+           lv.setAdapter(adapter2);
+           lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+               @Override
+               public void onItemClick(AdapterView<?> parent, View view,
+                                       int position, long id) {
 
+               }
+
+
+           });
+
+           Toast.makeText(MainActivity.this, "You Clicked at " + contactList.get(0).toString().substring(37, 47), Toast.LENGTH_SHORT).show();
 
 
        }
@@ -187,6 +204,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
         public boolean validate() {
+
             boolean valid = true;
             String email = _emailText.getText().toString();
             String pass = _passwordText.getText().toString();
@@ -203,6 +221,21 @@ public class MainActivity extends Activity implements OnClickListener {
             } else {
                 _passwordText.setError(null);
             }
+
+            if (!email.equals(contactList.get(0).toString().substring(8, 24))) {
+                _emailText.setError("El correo introducido no es correcto");
+                valid = false;
+            } else {
+                _emailText.setError(null);
+            }
+
+            if (!pass.equals(contactList.get(0).toString().substring(37, 47))) {
+                _passwordText.setError("La contraseña introducida no es correcto");
+                valid = false;
+            } else {
+                _passwordText.setError(null);
+            }
+
 
             return valid;
 

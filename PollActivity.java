@@ -34,7 +34,6 @@ public class PollActivity extends AppCompatActivity {
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +74,7 @@ public class PollActivity extends AppCompatActivity {
                 Bundle extras2 = new Bundle();
                 extras2.putString("status2", "No");
                 extras2.putString("status3", Collections.singletonList(userList.get(1)).toString().substring(12, 13));
-                extras2.putString("status4", Collections.singletonList(questionList.get(0)).toString());
+                extras2.putString("status4", Collections.singletonList(questionList.get(0)).toString().substring(52, 53));
                 i_survey2.putExtra("Respuesta2", "Su respuesta es no");
                 i_survey2.putExtras(extras2);
                 startActivity(i_survey2);
@@ -108,7 +107,7 @@ public class PollActivity extends AppCompatActivity {
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
-            String url = "http://192.168.202.191:8000/api/propuestas";
+            String url = "http://10.10.2.2:8000/api/propuestas";
             String jsonStr2 = sh.makeServiceCall(url);
 
             Log.e(TAG, "Response from url: " + jsonStr2);
@@ -171,7 +170,7 @@ public class PollActivity extends AppCompatActivity {
             protected Void doInBackground(Void... arg0) {
                 HttpHandler sh2 = new HttpHandler();
                 // Making a request to url and getting response
-                String url2 = "http://192.168.202.191:8000/api/usuarios";
+                String url2 = "http://10.10.2.2:8000/api/usuarios";
                 String jsonStr3 = sh2.makeServiceCall(url2);
 
                 Log.e(TAG, "Response from url: " + jsonStr3);

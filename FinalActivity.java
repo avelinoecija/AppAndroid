@@ -1,19 +1,14 @@
 package com.example.proyecto_3;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.os.AsyncTask;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.OutputStream;
 public class FinalActivity extends AppCompatActivity {
     private String TAG = FinalActivity.class.getSimpleName();
     final String status = null;
@@ -34,10 +29,10 @@ public class FinalActivity extends AppCompatActivity {
         Bundle bundle1 = i_survey1.getExtras();
         Bundle bundle2 = i_survey2.getExtras();
         Bundle bundle3 = i_survey3.getExtras();
-        String status = bundle1.getString("status");
-        String status2 = bundle2.getString("status2");
-        String status3 = bundle3.getString("status3");
-        String status4 = bundle2.getString("status4");
+        final String status = bundle1.getString("status");
+        final String status2 = bundle2.getString("status2");
+        final String status3 = bundle3.getString("status3");
+        final String status4 = bundle2.getString("status4");
 
 
 
@@ -70,74 +65,88 @@ public class FinalActivity extends AppCompatActivity {
             }
         });
 
-        new CallAPI().execute();
-    }
 
+        class insertData extends AsyncTask<Void, Void, Void> {
+            @SuppressLint("WrongThread")
+            @Override
+            protected Void doInBackground(Void... voids) {
 
+                HttpHandler sh = new HttpHandler();
+                // Making a request to url and getting response
+                if (status != null) {
+                    String url = "http://10.10.2.2:8000/api/votos?idusuario=" + status3 + "&idpropuesta=" + status4 + "&voto=" + status + "";
+                    String jsonStr = sh.makeServiceCall(url);
+                    Log.e(TAG, "Response from url: " + jsonStr);
+                    if (jsonStr != null) {
+                        Toast.makeText(getApplicationContext(),
+                                "datos insertados",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.e(TAG, "Couldn't get json from server.");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(),
+                                        "Couldn't get json from server. Check LogCat for possible errors!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                } else {
+                    String url2 = "http://10.10.2.2:8000/api/votos?idusuario=" + status3 + "&idpropuesta=" + status4 + "&voto=" + status2 + "";
+                    String jsonStr2 = sh.makeServiceCall(url2);
 
+                    Log.e(TAG, "Response from url: " + jsonStr2);
+                    if (jsonStr2 != null) {
+                        Toast.makeText(getApplicationContext(),
+                                "datos insertados",
+                                Toast.LENGTH_LONG).show();
 
-    public class CallAPI extends AsyncTask<Void, Void, Void> {
-
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            String urlString = "http://192.168.202.191:8000/api/votos";; // URL to call
-            String data1 = status3; //data to post
-            String data2 = status4;
-            String data3 = status;
-            String data4 = status2;
-            OutputStream out = null;
-            if (urlString != null) {
-                try {
-                    URL url = new URL(urlString);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    out = new BufferedOutputStream(urlConnection.getOutputStream());
-                    if (status == null) {
-                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-                        writer.write(data1);
-                        writer.write(data2);
-                        writer.write(data4);
-                        writer.flush();
-                        writer.close();
-                        out.close();
-
-
-                    } else if (status2 == null) {
-                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-                        writer.write(data1);
-                        writer.write(data2);
-                        writer.write(data3);
-                        writer.flush();
-                        writer.close();
-                        out.close();
-
-
-                        urlConnection.connect();
+                    } else {
+                        Log.e(TAG, "Couldn't get json from server.");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(),
+                                        "Couldn't get json from server. Check LogCat for possible errors!",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
 
-                } catch (Exception e) {
-                    Log.e(TAG, "No funciona lumen.");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "No funciona Lumen", Toast.LENGTH_LONG).show();
-                        }
-                    });
                 }
 
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Couldn't get json from server. Check LogCat for possible errors!", Toast.LENGTH_LONG).show();
-                    }
-                });
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+
+
+
+            }
+            @Override public void onPostExecute(Void results) {
+                super.onPostExecute(results);
+
+
+
             }
 
 
-            return null;
+
         }
+        new insertData().execute();
+
     }
-}
+
+
+    }
+
+
+
+
+
+
 
