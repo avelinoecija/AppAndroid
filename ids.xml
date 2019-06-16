@@ -2,4 +2,5 @@
 <resources>
     <item name="linear_layout" type="id"/>
     <item name="my_edit" type="id" />
+    <item name="item" type="id" />
 </resources>
